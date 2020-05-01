@@ -1,30 +1,22 @@
 <template>
   <div>
-    <input
-      type="text"
-      placeholder="Todo를 입력해주세요"
-      v-model="content"
-      @keypress="handleKeyPress"
-    />
-    <div>
-      <p v-for="todo in todos" :key="todo.id">
-        <span
-          @click="handleUpdate(todo)"
-          v-bind:class="{ done: todo.completed }"
-          >{{ todo.text }}</span
-        >
-        <button @click="handleDelete(todo)">X</button>
-      </p>
-    </div>
+    <TodoInput />
+    <TodoItem :todos="todos" />
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import TodoInput from "./TodoInput";
+import TodoItem from "./TodoItem";
 // import { dbTodoRef } from "../firebase";
 
 export default {
   name: "Todo",
+  components: {
+    TodoInput,
+    TodoItem
+  },
   data() {
     return {
       content: ""
@@ -36,22 +28,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["bindTodosRef", "createTodo", "deleteTodo", "updateTodo"]),
-    handleKeyPress: function(event) {
-      if (event.key === "Enter") {
-        if (this.content.length === 0) {
-          return alert("텍스트를 입력해주세요.");
-        }
-        this.createTodo(this.content);
-        this.content = "";
-      }
-    },
-    handleDelete: function(todo) {
-      this.deleteTodo(todo);
-    },
-    handleUpdate: function(todo) {
-      this.updateTodo(todo);
-    }
+    ...mapActions(["bindTodosRef"])
   },
   created() {
     this.bindTodosRef();
